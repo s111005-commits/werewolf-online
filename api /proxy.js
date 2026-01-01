@@ -1,16 +1,21 @@
 // api/proxy.js
 export default async function handler(req, res) {
-  // ===== CORS =====
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // ===== CORS Header Helper =====
+  const setCors = () => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  };
 
+  setCors();
+
+  // ===== OPTIONS 預檢 =====
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return res.status(405).json({ success: false, error: 'Method Not Allowed' });
   }
 
   try {
@@ -28,18 +33,17 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(text);
     } catch {
-      return res.status(500).json({
+      return res.status(200).json({
+        success: false,
         error: 'GAS 回傳非 JSON',
         raw: text
       });
     }
 
-    return res.status(200).json(data);
+    // ✅ 成功回傳
+    return res.status(200).json({ success: true, data });
 
   } catch (err) {
-    return res.status(500).json({
-      error: 'Proxy error',
-      detail: err.message
-    });
+    return res.status(500).json({ success: false, error: 'Proxy error', detail: err.message });
   }
 }
