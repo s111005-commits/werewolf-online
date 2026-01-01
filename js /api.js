@@ -67,7 +67,7 @@ class GameAPI {
 let gameAPI = null;
 
 function initializeAPI() {
-  const VERCEL_PROXY_URL = 'https://werewolf-game-ga88.vercel.app/api/proxy';
+  const VERCEL_PROXY_URL = 'https://werewolf-online.vercel.app/api/proxy';
   gameAPI = new GameAPI(VERCEL_PROXY_URL);
   console.log('✅ GameAPI 已初始化（使用正確 Vercel Proxy）');
   return gameAPI;
